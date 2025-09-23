@@ -1,0 +1,64 @@
+.navegacao {
+    position: fixed;
+    top: 0;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.05);
+    width: 100%;
+    z-index: 100;
+    padding: 1.5rem;
+}
+
+.menu {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    gap: 3rem;
+}
+
+.menu-centro {
+    display: flex;
+    gap: 3rem;
+}
+
+.menu-link {
+    text-decoration: none;
+    color: var(--claro);
+    font-weight: 500;
+    position: relative;
+    padding: 0.5rem 0;
+}
+
+.menu-link::after {
+    content: '';
+    height: 2px;
+    width: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(90deg, var(--primaria), var(--secundaria));
+    transition: width 0.5s ease;
+}
+
+.menu-link:hover::after {
+    width: 100%;
+}
+
+.novo-projeto {
+    margin-left: auto;
+}
+
+.btn-novo {
+    color: var(--claro);
+    background: rgba(99, 101, 241, 0.781);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: background 0.4s ease;
+}
+
+.btn-novo:hover {
+    background: rgba(79, 70, 229, 0.4);
+}
