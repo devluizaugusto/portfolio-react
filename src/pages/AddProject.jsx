@@ -1,12 +1,43 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 import './AddProject.css'
 
 function AddProject() {
 
+    const [title, setTitle] = useState('')
+    const [description, setDescription] = useState('')
+    const [image, setImage] = useState('')
+    const navigate = useNavigate()
+
     const [preview, setPreview] = useState('')
     const [fileName, setFileName] = useState('')
     const [message, setMessage] = useState('')
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+
+        const formData = new FormData()
+        formData.append("title", title)
+        formData.append("description", description)
+        if(image) {
+            formData.append("image", image)
+        }
+
+        try {
+            await axios.post("http://localhost:4000/api/projects", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            })
+            navigate("/")
+        }
+        catch (error) {
+            console.error("Erro ao adicionar projeto:", error)
+            alert("Erro ao salvar projeto.")
+        }
+    }
 
     useEffect(() => {
         if(message) {
@@ -21,6 +52,7 @@ function AddProject() {
         const file = e.target.files[0]
 
         if (file) {
+            setImage(file)
             setFileName(file.name)
             setPreview(URL.createObjectURL(file))
             setMessage("")
@@ -43,14 +75,28 @@ function AddProject() {
     return (
         <div className="form-projeto">
             <h2 className="form-projeto-titulo">Cadastro de Projeto</h2>
-            <form className="formulario" action="">
+            <form className="formulario" onSubmit={handleSubmit}>
                 <div className="form-grupo">
                     <label htmlFor="">Título:</label>
-                    <input type="text" className="form-campo" />
+                    <input 
+                        type="text" 
+                        className="form-campo"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        required
+                    />
                 </div>
                 <div className="form-grupo">
                     <label htmlFor="">Descrição:</label>
-                    <textarea name="" id="" className="form-campo" rows={6}></textarea>
+                    <textarea 
+                        name="" 
+                        id="" 
+                        className="form-campo" 
+                        rows={6}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        required
+                    />
                 </div>
                 <div className='form-arquivos'>
                     <input

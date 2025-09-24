@@ -80,7 +80,11 @@ input[type='file'] {
     font-size: 1rem;
 }
 
-.form-botao-salvar, .form-botao-remover:hover {
+.form-botao-salvar:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+} 
+.form-botao-remover:hover {
     transform: translateY(-4px);
     box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
 }
