@@ -1,19 +1,32 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 
 import './AddProject.css'
 
 function AddProject() {
 
+    const location = useLocation()
+    const navigate = useNavigate()
+
+    const editingProject = location.state?.project || null
+
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [image, setImage] = useState('')
-    const navigate = useNavigate()
-
     const [preview, setPreview] = useState('')
     const [fileName, setFileName] = useState('')
     const [message, setMessage] = useState('')
+
+    useEffect(() => {
+        if(editingProject) {
+            setTitle(editingProject.title)
+            setDescription(editingProject.description)
+            if(editingProject.image) {
+                setPreview(`http://localhost:4000${editingProject.image}`)
+            }
+        }
+    }, [editingProject])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -26,11 +39,19 @@ function AddProject() {
         }
 
         try {
-            await axios.post("http://localhost:4000/api/projects", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            })
+            if(editingProject) {
+                await axios.put(`http://localhost:4000/api/projects/${editingProject.id}`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                })
+            } else {
+                await axios.post("http://localhost:4000/api/projects", formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                })
+            } 
             navigate("/")
         }
         catch (error) {
@@ -74,7 +95,7 @@ function AddProject() {
 
     return (
         <div className="form-projeto">
-            <h2 className="form-projeto-titulo">Cadastro de Projeto</h2>
+            <h2 className="form-projeto-titulo">{editingProject ? "Editar Projeto" : "Cadastrar Projeto"}</h2>
             <form className="formulario" onSubmit={handleSubmit}>
                 <div className="form-grupo">
                     <label htmlFor="">Título:</label>
@@ -114,8 +135,20 @@ function AddProject() {
                     {fileName && <p className='file-name'>{fileName}</p>}
                     {preview && <img src={preview} alt='Preview' className='file-preview' />}
                     {message && <p className='file-message'>{message}</p>}
-                    <button type="submit" className="form-botao-salvar">Salvar</button>
-                    <button type='button' className='form-botao-remover' onClick={handleRemove}>Remover Imagem</button>
+
+                    <button 
+                        type="submit" 
+                        className="form-botao-salvar"
+                    >
+                        {editingProject ? "Salvar" : "Cadastrar"}
+                    </button>
+                    <button 
+                        type='button' 
+                        className='form-botao-remover' 
+                        onClick={handleRemove}
+                    >
+                        Remover Imagem
+                    </button>
                 </div>
             </form>
         </div>

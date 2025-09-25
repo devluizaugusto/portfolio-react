@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import './SectionProjetos.css'
 
 function SectionProjetos() {
     const [projects, setProjects] = useState([])
+    const navigate = useNavigate()
 
     useEffect(() => {
         axios.get('http://localhost:4000/api/projects')
@@ -23,6 +25,10 @@ function SectionProjetos() {
         catch (error) {
             console.error("Erro ao remover projeto:", error)
         }
+    }
+
+    const editProject = (project) => {
+        navigate("/AddProject", { state: { project } })
     }
 
     return (
@@ -46,7 +52,12 @@ function SectionProjetos() {
                                 <p className='paragrafo-projetos'>{project.description}</p>
                             </div>
                             <div className='btn-grupos'>
-                                <button className='btn-editar'>Editar Projeto</button>
+                                <button 
+                                    className='btn-editar'
+                                    onClick={() => editProject(project)}
+                                >
+                                    Editar Projeto
+                                </button>
                                 <button
                                     className='btn-remover'
                                     onClick={() => removeProject(project.id)}
